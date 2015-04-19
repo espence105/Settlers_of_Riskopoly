@@ -5,7 +5,21 @@ h2{
     list-style-type: none;
     padding-left: 2%;
     padding-right: 5%;
-
+}
+.admin-container{
+    height: 1000px;
+    width: 1360px;
+    margin-left: 30%;
+}
+.selling{
+    width: 60%;
+    padding: 10%;
+}
+.resource-padding{
+    padding-right:2px;
+}
+.no-dot{
+    list-style-type: none;
 }
 .text-info{
     width:50%;
