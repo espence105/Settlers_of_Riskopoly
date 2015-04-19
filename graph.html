@@ -23,48 +23,48 @@
             // We use an inline data source in the example, usually data would
             // be fetched from a server
             var count = 0;
-            var data = [],
-                    totalPoints = 300;
-            var d3 = [];
-            for (var i = 0; i < Math.PI * 2; i += 0.1) {
-                d3.push([i, Math.tan(i)]);
-            }
-            function getCommodityCost(resource) {
-                $.getJSON(url, function (data) {
-                    // Do stuff with the json
-                });
-            }
+            var totalPoints = 300;
 
-            function getRandomData() {
+            function dataObject() {
+                this.data = [];
+                this.getCommodityCost = function () {
+                    $.getJSON(url, function (data) {
+                        // Do stuff with the json
+                    });
+                }
+                this.getRandomData = function () {
+                    if (this.data.length > 0)
+                        this.data = this.data.slice(1);
 
-                if (data.length > 0)
-                    data = data.slice(1);
+                    // Do a random walk
 
-                // Do a random walk
+                    while (this.data.length < totalPoints) {
 
-                while (data.length < totalPoints) {
+                        var prev = this.data.length > 0 ? this.data[this.data.length - 1] : 50,
+                                y = prev + Math.random() * 10 - 5;
 
-                    var prev = data.length > 0 ? data[data.length - 1] : 50,
-                            y = prev + Math.random() * 10 - 5;
+                        if (y < 0) {
+                            y = 0;
+                        } else if (y > 100) {
+                            y = 100;
+                        }
 
-                    if (y < 0) {
-                        y = 0;
-                    } else if (y > 100) {
-                        y = 100;
+                        this.data.push(y);
                     }
 
-                    data.push(y);
+                    // Zip the generated y values with the x values
+
+                    var res = [];
+                    for (var i = 0; i < this.data.length; ++i) {
+                        res.push([i, this.data[i]])
+                    }
+
+                    return res;
                 }
 
-                // Zip the generated y values with the x values
 
-                var res = [];
-                for (var i = 0; i < data.length; ++i) {
-                    res.push([i, data[i]])
-                }
-
-                return res;
             }
+
 
             // Set up the control widget
 
@@ -81,9 +81,10 @@
                     $(this).val("" + updateInterval);
                 }
             });
-
-            var plot = $.plot("#placeholder", [{label: "Wheat", data: getRandomData()},
-                {label: "Iron", data: getRandomData()}], {
+            var wheatData = new dataObject();
+            var ironData = new dataObject();
+            var plot = $.plot("#placeholder", [{label: "Wheat", data: wheatData.getRandomData()},
+                {label: "Iron", data: ironData.getRandomData()}], {
                 series: {
                     shadowSize: 0	// Drawing is faster without shadows
                 },
@@ -107,13 +108,11 @@
                     $(".transaction").last().remove();
                     $("#commodity-ticker").prepend("<li class='transaction'> Market opened at " + count + " ticks </li>");
                 }
-
-
             }
 
             function update() {
-                var wheat = getRandomData();
-                var iron = getRandomData();
+                var wheat = wheatData.getRandomData();
+                var iron = ironData.getRandomData();
                 getTransactions();
                 var temp = wheat[wheat.length - 1];
 
@@ -150,6 +149,22 @@
                 </li>
 
             </ul>
+            <div class="text-info">
+                <ul>
+                    <li class="no-dot">
+                        <div class="resource">
+                            <label id="wheat" class="control-label">Wheat</label> <label id="wheatprice"
+                                                                                         class="resource-padding control-label"></label>
+                        </div>
+                    </li>
+                    <li class="no-dot">
+                        <div class="resource">
+                            <label id="iron" class="control-label">Iron</label> <label id="ironprice"
+                                                                                       class="resource-padding control-label"></label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="graph-holder">
             <div id="header">
@@ -161,24 +176,7 @@
                 </div>
             </div>
         </div>
-        <div class="text-info demo-container">
-            <ul>
-                <li class="no-dot">
-                    <div class="resource">
-                        <label id="wheat" class="control-label">Wheat</label> <label id="wheatprice"
-                                                                                              class="resource-padding control-label"></label>
-                    </div>
-                </li>
-                <li class="no-dot">
-                    <div class="resource">
-                        <label id="iron" class="control-label">Iron</label> <label id="ironprice"
-                                                                                            class="resource-padding control-label"></label>
-                    </div>
-                </li>
-            </ul>
 
-
-    </div>
 
         </div>
     <div id="footer">

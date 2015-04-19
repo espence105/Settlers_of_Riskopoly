@@ -1,6 +1,10 @@
 h2{
     text-align: center;
 }
+
+body {
+    overflow-y: hidden;
+}
 #commodity-ticker{
     list-style-type: none;
     padding-left: 2%;
@@ -22,14 +26,16 @@ h2{
     list-style-type: none;
 }
 .text-info{
-    width:50%;
-    padding-left:20%;
 }
 .sidebar {
     max-width: 24%;
     float: left;
     border-right: thick solid black;
     height: 1087px;
+    padding-top: 5%;
+    margin-left: -10%;
+    padding-right: 10px;
+
 }
 .container{
     max-width: 1130px;
